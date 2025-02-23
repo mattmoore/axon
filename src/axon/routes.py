@@ -1,11 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
-from transformers import pipeline
+
+from .ai.sentiment_analysis import sentiment_analysis
 
 app = FastAPI()
-
-#classifier = pipeline("sentiment-analysis")
 
 @app.get("/")
 async def root():
@@ -16,12 +15,16 @@ class SentimentAnalysisRequest(BaseModel):
     text: str
 
 class SentimentAnalysisResponse(BaseModel):
-    analysis: str
+    label: str
+    score: float
 
 @app.post("/api/sentiment-analysis")
-async def sentiment_analysis(request: SentimentAnalysisRequest):
-    #res = classifier(request.text)
-    return SentimentAnalysisResponse(analysis = "TEST")
+async def sentiment_analysis_endpoint(request: SentimentAnalysisRequest):
+    res = sentiment_analysis(request.text)
+    return SentimentAnalysisResponse(
+        label = str(res[0]['label']),
+        score = str(res[0]['score']),
+    )
 
 
 def start():
