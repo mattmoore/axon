@@ -14,6 +14,9 @@ dependencies = [
 [tool.poetry]
 packages = [{include = "axon", from = "src"}]
 
+[tool.poetry.scripts]
+start = "axon.routes:start"
+
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
