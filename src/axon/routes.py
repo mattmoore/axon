@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from .ai.sentiment_analysis import sentiment_analysis
+from .ai.ask import ask
 
 app = FastAPI()
 
@@ -25,6 +26,18 @@ async def sentiment_analysis_endpoint(request: SentimentAnalysisRequest):
         label = str(res[0]['label']),
         score = str(res[0]['score']),
     )
+
+
+class AskRequest(BaseModel):
+    text: str
+
+class AskResponse(BaseModel):
+    answer: str
+
+@app.post("/api/ask")
+async def ask_endpoint(request: AskRequest):
+    res = ask(request.text)
+    return AskResponse(answer = str(res['answer']))
 
 
 def start():
