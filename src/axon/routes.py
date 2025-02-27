@@ -1,11 +1,16 @@
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
+from prometheus_client import make_asgi_app
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from .ai.sentiment_analysis import sentiment_analysis
 from .ai.ask import ask
 
 app = FastAPI()
+
+instrumentator = Instrumentator().instrument(app, metric_namespace = 'axon')
+instrumentator.expose(app, include_in_schema = False, should_gzip = True)
 
 @app.get("/")
 async def root():
@@ -38,7 +43,6 @@ class AskResponse(BaseModel):
 async def ask_endpoint(request: AskRequest):
     res = ask(request.text)
     return AskResponse(answer = str(res['answer']))
-
 
 def start():
     """Launched with `poetry run start` at root level"""
