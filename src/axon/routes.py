@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
-from prometheus_client import make_asgi_app
+from prometheus_client import Counter
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from .ai.sentiment_analysis import sentiment_analysis
@@ -39,9 +39,11 @@ class AskRequest(BaseModel):
 class AskResponse(BaseModel):
     answer: str
 
+ask_counter = Counter('custom_ask_counter', 'Ask query counter')
 @app.post("/api/ask")
 async def ask_endpoint(request: AskRequest):
     res = ask(request.text)
+    ask_counter.inc()
     return AskResponse(answer = str(res['answer']))
 
 def start():
