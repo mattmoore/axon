@@ -6,7 +6,7 @@ from typing import Callable
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_fastapi_instrumentator.metrics import Info
 from prometheus_client import Counter
-from .json_formatter import JsonFormatter, makeLogger
+from .logging import JsonFormatter, makeLogger
 
 logger = makeLogger(__name__)
 makeLogger('uvicorn.access')
