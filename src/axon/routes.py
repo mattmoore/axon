@@ -6,31 +6,7 @@ from typing import Callable
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_fastapi_instrumentator.metrics import Info
 from prometheus_client import Counter
-import json
-import logging
-from logging import Formatter, LogRecord
-
-class JsonFormatter(Formatter):
-    def __init__(self):
-        super(JsonFormatter, self).__init__()
-
-    def format(self, record: LogRecord) -> str:
-        record_dict = {
-            "level": record.levelname,
-            "date": self.formatTime(record),
-            "message": record.getMessage(),
-            "module": record.module,
-            "lineno": record.lineno,
-        }
-        return json.dumps(record_dict)
-
-def makeLogger(name):
-    logger = logging.getLogger(name)
-    logging_handler = logging.StreamHandler()
-    logging_handler.setFormatter(JsonFormatter())
-    logger.handlers = [logging_handler]
-    logger.setLevel(logging.DEBUG)
-    return logger
+from .json_formatter import JsonFormatter, makeLogger
 
 logger = makeLogger(__name__)
 makeLogger('uvicorn.access')
@@ -74,27 +50,6 @@ class AskRequest(BaseModel):
 
 class AskResponse(BaseModel):
     answer: str
-
-
-# Note: Can set up custom interceptors with this
-#def http_requested_languages_total() -> Callable[[Info], None]:
-#    METRIC = Counter(
-#        "http_requested_languages_total",
-#        "Number of times ask API is queried.",
-#        labelnames = ("lang",)
-#    )
-#
-#    def instrumentation(info: Info) -> None:
-#        langs = set()
-#        lang_str = info.request.headers["Accept-Language"]
-#        for element in lang_str.split(","):
-#            element = element.split(";")[0].strip().lower()
-#            langs.add(element)
-#        for language in langs:
-#            METRIC.labels(language).inc()
-#
-#    return instrumentation
-#instrumentator.add(http_requested_languages_total())
 
 ask_counter = Counter('custom_ask_counter', 'Ask query counter')
 @app.post("/api/ask")
