@@ -2,6 +2,12 @@
 
 AI Examples
 
+## Run
+
+```shell
+poetry run start
+```
+
 > [!NOTE]
 > Can set up custom interceptors with this:
 > 
