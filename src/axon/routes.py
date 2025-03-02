@@ -1,3 +1,4 @@
+import sys
 import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -5,6 +6,35 @@ from typing import Callable
 from prometheus_fastapi_instrumentator import Instrumentator
 from prometheus_fastapi_instrumentator.metrics import Info
 from prometheus_client import Counter
+import json
+import logging
+from logging import Formatter, LogRecord
+
+class JsonFormatter(Formatter):
+    def __init__(self):
+        super(JsonFormatter, self).__init__()
+
+    def format(self, record: LogRecord) -> str:
+        record_dict = {
+            "level": record.levelname,
+            "date": self.formatTime(record),
+            "message": record.getMessage(),
+            "module": record.module,
+            "lineno": record.lineno,
+        }
+        return json.dumps(record_dict)
+
+def makeLogger(name):
+    logger = logging.getLogger(name)
+    logging_handler = logging.StreamHandler()
+    logging_handler.setFormatter(JsonFormatter())
+    logger.handlers = [logging_handler]
+    logger.setLevel(logging.DEBUG)
+    return logger
+
+logger = makeLogger(__name__)
+makeLogger('uvicorn.access')
+
 
 from .ai.sentiment_analysis import sentiment_analysis
 from .ai.ask import ask
@@ -19,6 +49,7 @@ instrumentator.expose(app, include_in_schema = False, should_gzip = True)
 
 @app.get("/")
 async def root():
+    logger.info("Hello World")
     return {"message": "Hello World"}
 
 
@@ -68,9 +99,10 @@ class AskResponse(BaseModel):
 ask_counter = Counter('custom_ask_counter', 'Ask query counter')
 @app.post("/api/ask")
 async def ask_endpoint(request: AskRequest):
-    res = ask(request.text)
+    res = ask(request.text)['answer']
+    logger.info("Query: {}, Answer: {}".format(request.text, res))
     ask_counter.inc()
-    return AskResponse(answer = str(res['answer']))
+    return AskResponse(answer = str(res))
 
 def start():
     """Launched with `poetry run start` at root level"""
