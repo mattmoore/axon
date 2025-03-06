@@ -1,0 +1,17 @@
+meta {
+  name: Sentiment Analysis
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/api/sentiment-analysis
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "text": "I've been waiting for a HuggingFace course my whole life."
+  }
+}
