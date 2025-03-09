@@ -13,10 +13,14 @@ dependencies = [
     "torch (>=2.6.0,<3.0.0)",
     "requests (>=2.32.3,<3.0.0)",
     "bs4 (>=0.0.2,<0.0.3)",
-    "prometheus-fastapi-instrumentator (>=7.0.2,<8.0.0)",
-    "prometheus-client (>=0.21.1,<0.22.0)",
     "uvicorn (>=0.34.0,<0.35.0)",
-    "logging (>=0.4.9.6,<0.5.0.0)"
+    "logging (>=0.4.9.6,<0.5.0.0)",
+    "opentelemetry-api (>=1.30.0,<2.0.0)",
+    "opentelemetry-sdk (>=1.30.0,<2.0.0)",
+    "opentelemetry-instrumentation-fastapi (>=0.51b0,<0.52)",
+    "opentelemetry-instrumentation-requests (>=0.51b0,<0.52)",
+    "opentelemetry-opentracing-shim (>=0.51b0,<0.52)",
+    "opentelemetry-exporter-otlp (>=1.30.0,<2.0.0)"
 ]
 
 [tool.poetry]

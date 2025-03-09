@@ -28,6 +28,9 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --enable-feature=otlp-write-receiver
     volumes:
       - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -48,6 +51,15 @@ services:
     depends_on:
       - jaeger
       - prometheus
+    networks:
+      - axon-network
+
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./observability/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    ports:
+      - "3000:3000"
     networks:
       - axon-network
 
