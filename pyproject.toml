@@ -27,7 +27,7 @@ dependencies = [
 packages = [{include = "axon", from = "src"}]
 
 [tool.poetry.scripts]
-start = "axon.routes:start"
+server = "axon.server:run"
 
 
 [build-system]

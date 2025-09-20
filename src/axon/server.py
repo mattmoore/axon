@@ -31,11 +31,13 @@ FastAPIInstrumentor.instrument_app(app)
 ask_metrics = AskMetrics(meter)
 sentiment_metrics = SentimentAnalysisMetrics(meter)
 
+
 @app.get("/")
 async def root():
     with tracer.start_as_current_span("root_request"):
         logger.info("Hello World")
         return {"message": "Hello World"}
+
 
 @app.post("/api/sentiment-analysis")
 async def sentiment_analysis_endpoint(request: SentimentAnalysisRequest):
@@ -45,9 +47,10 @@ async def sentiment_analysis_endpoint(request: SentimentAnalysisRequest):
     duration = end - start
     sentiment_metrics.record_sentiment_analysis_duration(duration)
     return SentimentAnalysisResponse(
-        label = str(res[0]['label']),
-        score = str(res[0]['score']),
+        label=str(res[0]['label']),
+        score=str(res[0]['score']),
     )
+
 
 @app.post("/api/ask")
 async def ask_endpoint(request: AskRequest):
@@ -59,8 +62,13 @@ async def ask_endpoint(request: AskRequest):
     ask_metrics.record_ask_duration(duration)
     ask_metrics.record_ask_counter()
     logger.info("Query: {}, Answer: {}".format(request.text, res))
-    return AskResponse(answer = str(res))
+    return AskResponse(answer=str(res))
 
-def start():
-    """Launched with `poetry run start` at root level"""
-    uvicorn.run("axon.routes:app", host="0.0.0.0", port=8000, reload=True)
+
+def run():
+    uvicorn.run(
+        "axon.server:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True
+    )
