@@ -12,6 +12,6 @@ scrape_configs:
     static_configs:
       - targets: ["otel-collector:8889"]
 
-  - job_name: "axon" # scrape metrics from the axon collector
-    static_configs:
-      - targets: ["axon:8000"]
+  #- job_name: "axon" # scrape metrics from the axon collector
+  #  static_configs:
+  #    - targets: ["axon:8000"]

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axon-deployment
+  labels:
+    app: axon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: axon
+  template:
+    metadata:
+      labels:
+        app: axon
+    spec:
+      containers:
+      - name: axon
+        image: axon:0.1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: axon-service
+spec:
+  type: NodePort
+  selector:
+    app: axon
+  ports:
+  - name: name-of-service-port
+    protocol: TCP
+    port: 8000
+    nodePort: 30000

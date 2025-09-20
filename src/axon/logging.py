@@ -16,7 +16,7 @@ class JsonFormatter(Formatter):
         }
         return json.dumps(record_dict)
 
-def makeLogger(name):
+def make_logger(name):
     logger = logging.getLogger(name)
     logging_handler = logging.StreamHandler()
     logging_handler.setFormatter(JsonFormatter())

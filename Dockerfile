@@ -16,4 +16,4 @@ RUN poetry lock && poetry install
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "uvicorn", "axon.routes:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["poetry", "run", "uvicorn", "axon.server:run", "--host", "0.0.0.0", "--port", "8000"]
